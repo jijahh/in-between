@@ -69,7 +69,10 @@ class Game:
         return self.players[self.current_player_index]
 
     def next_player(self):
-        self.current_player_index = (self.current_player_index + 1) % len(self.players)
+        next_index = self.current_player_index + 1
+        if next_index >= len(self.players):
+            self.start_round()
+        self.current_player_index = next_index % len(self.players)
 
     def _state_event(self):
         return {
@@ -201,10 +204,10 @@ class Game:
                         "amount": amount,
                     }
                     events.append(event)
+            self.next_player()
             events.append(self._state_event())
             if self.check_winner():
                 events.append(self.check_winner())
-            self.next_player()
             return events
 
         else:
