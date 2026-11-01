@@ -37,6 +37,7 @@ class Game:
         self.start_round()
 
     def start_round(self):
+        self.current_player_index = 0
         self.deck = deck.copy()
         random.shuffle(self.deck)
         for player in self.players:
@@ -72,7 +73,16 @@ class Game:
         next_index = self.current_player_index + 1
         if next_index >= len(self.players):
             self.start_round()
+            event = {
+                "type": "ROUND_STARTED",
+                "message": "A new round has started. All players have been dealt new hands.",
+                "current_player": self.current_player.name,
+            }
         self.current_player_index = next_index % len(self.players)
+        if event:
+            return event
+        else:
+            return None
 
     def _state_event(self):
         return {
@@ -124,6 +134,8 @@ class Game:
                 raise ValueError(
                     "Both 'amount' and 'choice' must be provided for a bet."
                 )
+            if isinstance(amount, str) and amount.lower() == "all_in":
+                amount = min(player.money, self.pot)
             if amount <= 0:
                 raise ValueError("Bet amount must be a positive number.")
             if amount > player.money:
@@ -204,7 +216,11 @@ class Game:
                         "amount": amount,
                     }
                     events.append(event)
-            self.next_player()
+            if self.pot <= 0:
+                self.start_round()
+            next_player_event = self.next_player()
+            if next_player_event:
+                events.append(next_player_event)
             events.append(self._state_event())
             if self.check_winner():
                 events.append(self.check_winner())
