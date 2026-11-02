@@ -147,9 +147,13 @@ class Game:
                 raise ValueError(
                     "Choice must be one of 'higher', 'lower', or 'between'."
                 )
-            if choice in ["higher", "lower"] and player.hand[0][2] == player.hand[1][2]:
+            if choice in ["higher", "lower"] and player.hand[0][2] != player.hand[1][2]:
                 raise ValueError(
-                    "Cannot bet on 'higher' or 'lower' when both cards are the same."
+                    "Cannot bet on 'higher' or 'lower' when both cards are not the same."
+                )
+            if choice == "between" and player.hand[0][2] == player.hand[1][2]:
+                raise ValueError(
+                    "Cannot bet on 'between' when both cards are the same."
                 )
             self.draw_card(player)
             event = {
