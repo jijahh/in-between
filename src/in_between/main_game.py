@@ -71,6 +71,7 @@ class Game:
 
     def next_player(self):
         next_index = self.current_player_index + 1
+        event = None
         if next_index >= len(self.players):
             self.start_round()
             event = {
@@ -79,7 +80,7 @@ class Game:
                 "current_player": self.current_player.name,
             }
         self.current_player_index = next_index % len(self.players)
-        if event:
+        if event is not None:
             return event
         else:
             return None
