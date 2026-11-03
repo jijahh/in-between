@@ -284,7 +284,8 @@ class Game:
                     events.append(self.check_winner())
             if self.pot <= 0:
                 self.start_round()
-            next_player_event = self.next_player()
+            else:
+                next_player_event = self.next_player()
             if next_player_event:
                 events.append(next_player_event)
             events.append(self._state_event())
