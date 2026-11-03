@@ -272,6 +272,16 @@ class Game:
                         "amount": amount,
                     }
                     events.append(event)
+            if player.money <= 0:
+                event = {
+                    "type": "PLAYER_ELIMINATED",
+                    "player": player.name,
+                    "message": f"{player.name} has been eliminated from the game.",
+                }
+                events.append(event)
+                self.players.remove(player)
+                if self.check_winner():
+                    events.append(self.check_winner())
             if self.pot <= 0:
                 self.start_round()
             next_player_event = self.next_player()
