@@ -1,14 +1,30 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from in_between.api_routes import router as rooms_router
 from in_between.websocket import router as websocket_router
+from in_between.connection import room_manager
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+
+    await room_manager.startup()
+
+    yield
+
+    await room_manager.shutdown()
+
 
 app = FastAPI(
     title="In Between WebSocket API",
     description="Room management and real-time In Between game actions.",
     version="1.0.0",
+    lifespan=lifespan,
 )
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -17,6 +33,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 app.include_router(rooms_router)
 app.include_router(websocket_router)

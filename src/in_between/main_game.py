@@ -107,6 +107,57 @@ class Game:
             "winner": self.winner.name if self.winner else None,
         }
 
+    def to_storage_dict(self):
+        return {
+            "deck": self.deck,
+            "players": [
+                {
+                    "name": player.name,
+                    "player_no": player.player_no,
+                    "money": player.money,
+                    "hand": player.hand,
+                    "drawn_card": player.drawn_card,
+                }
+                for player in self.players
+            ],
+            "current_player_index": self.current_player_index,
+            "pot": self.pot,
+            "winner_player_no": (self.winner.player_no if self.winner else None),
+        }
+
+    @classmethod
+    def from_storage_dict(cls, data):
+        game = cls.__new__(cls)
+
+        game.deck = [tuple(card) for card in data["deck"]]
+
+        game.players = []
+
+        for player_data in data["players"]:
+            player = Player(player_data["name"], player_data["player_no"])
+
+            player.money = player_data["money"]
+
+            player.hand = [tuple(card) for card in player_data["hand"]]
+
+            drawn_card = player_data["drawn_card"]
+
+            player.drawn_card = tuple(drawn_card) if drawn_card else None
+
+            game.players.append(player)
+
+        game.current_player_index = data["current_player_index"]
+        game.pot = data["pot"]
+
+        winner_player_no = data["winner_player_no"]
+
+        game.winner = next(
+            (player for player in game.players if player.player_no == winner_player_no),
+            None,
+        )
+
+        return game
+
     def handle_action(self, player_name, action, data=None):
         if self.winner:
             raise ValueError("The game is over; no further actions can be taken.")
