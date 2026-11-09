@@ -2,7 +2,9 @@
 
 A real-time multiplayer card game inspired by the card game **In-Between**. Players take turns betting whether a drawn card's value will be higher than, lower than, or between their two dealt cards (non-inclusive).
 
-**Live game:** [https://in-between-ronl.onrender.com](https://in-between-ronl.onrender.com)
+**Live game Front End:** [https://in-between-web-zeta.vercel.app](https://in-between-web-zeta.vercel.app)
+
+**Live game API:** [https://in-between-ronl.onrender.com](https://in-between-ronl.onrender.com)
 
 **Repository:** [https://github.com/jijahh/in-between](https://github.com/jijahh/in-between)
 
