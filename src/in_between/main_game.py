@@ -168,6 +168,24 @@ class Game:
 
         action = action.strip().upper()
         events = []
+        if action == "GIVE_UP":
+            event = {
+                "type": "PLAYER_GAVE_UP",
+                "player": player.name,
+                "message": f"{player.name} has been forfeited from the game.",
+            }
+            events.append(event)
+            self.players.remove(player)
+            if self.check_winner():
+                events.append(self.check_winner())
+            next_player_event = self.next_player()
+            if next_player_event is not None:
+                events.append(next_player_event)
+            events.append(self._state_event())
+            if self.check_winner():
+                events.append(self.check_winner())
+            return events
+
         if action == "PASS":
             self.next_player()
             event = {
