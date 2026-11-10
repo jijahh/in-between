@@ -37,7 +37,6 @@ class Game:
         self.start_round()
 
     def start_round(self):
-        self.current_player_index = 0
         self.deck = deck.copy()
         random.shuffle(self.deck)
         for player in self.players:
@@ -72,7 +71,7 @@ class Game:
     def next_player(self):
         next_index = self.current_player_index + 1
         event = None
-        if next_index >= len(self.players):
+        if next_index >= len(self.players) or self.pot <= 0:
             self.start_round()
             event = {
                 "type": "ROUND_STARTED",
@@ -282,11 +281,7 @@ class Game:
                 self.players.remove(player)
                 if self.check_winner():
                     events.append(self.check_winner())
-            next_player_event = None
-            if self.pot <= 0:
-                self.start_round()
-            else:
-                next_player_event = self.next_player()
+            next_player_event = self.next_player()
             if next_player_event is not None:
                 events.append(next_player_event)
             events.append(self._state_event())
