@@ -72,6 +72,7 @@ class Game:
         next_index = self.current_player_index + 1
         event = None
         if next_index >= len(self.players) or self.pot <= 0:
+            self.current_player_index = next_index % len(self.players)
             self.start_round()
             event = {
                 "type": "ROUND_STARTED",
