@@ -70,16 +70,15 @@ class Game:
 
     def next_player(self):
         next_index = self.current_player_index + 1
+        self.current_player_index = next_index % len(self.players)
         event = None
         if next_index >= len(self.players) or self.pot <= 0:
-            self.current_player_index = next_index % len(self.players)
             self.start_round()
             event = {
                 "type": "ROUND_STARTED",
                 "message": "A new round has started. All players have been dealt new hands.",
                 "current_player": self.current_player.name,
             }
-        self.current_player_index = next_index % len(self.players)
         if event is not None:
             return event
         else:
